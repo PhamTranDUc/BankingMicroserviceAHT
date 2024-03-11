@@ -1,0 +1,3 @@
+users : sẽ quản lý user và role
+accounts: sẽ quản lý accounts và currencies
+transactions: sẽ quản lý các giao dịch biến động số dư
