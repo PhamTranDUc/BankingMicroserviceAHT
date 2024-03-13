@@ -2,7 +2,7 @@ package org.example.transactionservice.common;
 
 public enum AccountType {
     SAVINGS("Tiết kiệm"),
-    CHECKING("Thanh toán");
+    CHECKOUT("Thanh toán");
 
     private final String description;
 

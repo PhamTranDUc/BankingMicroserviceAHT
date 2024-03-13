@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.transactionservice.common.TransactionType;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -24,11 +25,13 @@ public class Transaction {
 
     private Double amount;
 
+    private String description;
+
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date transactionDate;
+    private LocalDateTime transactionDate;
 
 }
 
