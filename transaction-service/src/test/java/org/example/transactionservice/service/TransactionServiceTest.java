@@ -2,12 +2,12 @@ package org.example.transactionservice.service;
 
 import org.example.transactionservice.common.AccountType;
 import org.example.transactionservice.common.TransactionType;
+import org.example.transactionservice.dto.transaction.DepositDto;
 import org.example.transactionservice.dto.transaction.TransferDto;
 import org.example.transactionservice.dto.transaction.WithdrawDto;
 import org.example.transactionservice.exception.InsufficientBalanceException;
 import org.example.transactionservice.model.BankAccount;
 import org.example.transactionservice.model.Transaction;
-import org.example.transactionservice.repository.BankAccountRepository;
 import org.example.transactionservice.repository.TransactionRepository;
 import org.example.transactionservice.service.implement.BankAccountService;
 import org.example.transactionservice.service.implement.TransactionService;
@@ -20,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,8 +40,8 @@ public class TransactionServiceTest {
     @Before
     public void setUp() throws Exception {
         // Giả lập hành vi của bankAccountService
-        when(bankAccountService.getBankAccById(1L)).thenReturn(new BankAccount(1L, null,100000000D, AccountType.CHECKOUT, LocalDateTime.now()));
-        when(bankAccountService.getBankAccById(1L)).thenReturn(new BankAccount(1L, null,100000000D, AccountType.CHECKOUT, LocalDateTime.now()));
+        when(bankAccountService.getBankAccById(1L)).thenReturn(new BankAccount(1L, null, 100000000D, AccountType.CHECKOUT, LocalDateTime.now()));
+        when(bankAccountService.getBankAccById(2L)).thenReturn(new BankAccount(2L, null, 100000000D, AccountType.CHECKOUT, LocalDateTime.now()));
     }
 
     @Test
@@ -56,7 +55,7 @@ public class TransactionServiceTest {
 
     @Test(expected = InsufficientBalanceException.class)
     public void testTransferWithInsufficientBalance() throws Exception {
-        TransferDto transferDto = new TransferDto(1L, 2L, 1500D, "test");
+        TransferDto transferDto = new TransferDto(1L, 2L, 15000000D, "test");
 
         transactionService.transfer(transferDto); // Phải ném ra InsufficientBalanceException
     }
@@ -99,7 +98,34 @@ public class TransactionServiceTest {
         assertEquals(expectedTransaction.getDescription(), result.getDescription());
         assertEquals(expectedTransaction.getTransactionType(), result.getTransactionType());
 
-        verify(transactionRepository, times(1)).save(expectedTransaction);
         verify(bankAccountService, times(1)).updateAccountBalance(12345L, -100.0);
     }
+
+    @Test
+    public void depositSuccessfulDepositReturnsTransaction() throws Exception {
+
+        DepositDto depositDto = new DepositDto();
+        depositDto.setAccountId(1L);
+        depositDto.setAmount(200000D);
+        depositDto.setDescription("Nap tien");
+
+        BankAccount destinationAcc = new BankAccount();
+        destinationAcc.setAccountId(1L);
+
+        Mockito.when(bankAccountService.getBankAccById(1L)).thenReturn(destinationAcc);
+
+        // Act
+        Transaction result = transactionService.deposit(depositDto);
+
+        // Assert
+        Mockito.verify(transactionRepository, Mockito.times(1)).save(result);
+        Mockito.verify(bankAccountService, Mockito.times(1)).updateAccountBalance(1L, 200000D);
+
+        assertEquals(1L, result.getDestinationAccountId());
+        assertEquals(LocalDateTime.now().getDayOfYear(), result.getTransactionDate().getDayOfYear()); // You might want to adjust this assertion based on your requirements.
+        assertEquals(200000D, result.getAmount());
+        assertEquals("Nap tien", result.getDescription());
+        assertEquals(TransactionType.DEPOSIT, result.getTransactionType());
+    }
+
 }

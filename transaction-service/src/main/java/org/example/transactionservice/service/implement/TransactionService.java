@@ -6,7 +6,6 @@ import org.example.transactionservice.common.TransactionType;
 import org.example.transactionservice.dto.transaction.DepositDto;
 import org.example.transactionservice.dto.transaction.TransferDto;
 import org.example.transactionservice.dto.transaction.WithdrawDto;
-import org.example.transactionservice.exception.AccountIsNotValidException;
 import org.example.transactionservice.exception.InsufficientBalanceException;
 import org.example.transactionservice.model.BankAccount;
 import org.example.transactionservice.model.Transaction;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
