@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.transactionservice.common.AccountType;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -26,7 +27,7 @@ public class BankAccount {
     private AccountType accountType;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
 }
 
