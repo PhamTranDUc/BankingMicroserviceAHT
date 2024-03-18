@@ -6,17 +6,24 @@ import lombok.NoArgsConstructor;
 import org.example.transactionservice.exception.AccountIsNotValidException;
 import org.example.transactionservice.exception.InsufficientBalanceException;
 import org.example.transactionservice.model.BankAccount;
+import org.example.transactionservice.model.MessageUpdateBalace;
 import org.example.transactionservice.repository.BankAccountRepository;
 import org.example.transactionservice.service.IService.IBankAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class BankAccountService implements IBankAccountService {
 
-    @Autowired
+    private final KafkaTemplate<String, String> kafkaTemplate;
     private final BankAccountRepository bankAccountRepository;
+
+    public BankAccountService(KafkaTemplate<String, String> kafkaTemplate, BankAccountRepository bankAccountRepository){
+        this.kafkaTemplate= kafkaTemplate;
+        this.bankAccountRepository=bankAccountRepository;
+    }
+
 
     @Override
     public BankAccount getBankAccById(Long accountId) throws Exception {
@@ -36,5 +43,14 @@ public class BankAccountService implements IBankAccountService {
 
         bankAccount.setBalance(updatedBalance);
         bankAccountRepository.save(bankAccount);
+        sendMessage(accountId.toString(), bankAccount.getBalance());
+    }
+
+    private void sendMessage(String accountId, double balance) {
+        String topic = "balance_updates";
+        Long balanceL= Math.round(balance);
+        MessageUpdateBalace messageUpdateBalace= new MessageUpdateBalace(accountId,Long.toString(balanceL));
+        // Gửi thông điệp Kafka với accountId và amount
+        kafkaTemplate.send(topic, "updateBalance", messageUpdateBalace.toString());
     }
 }
