@@ -8,16 +8,15 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 public class BalanceChangeHandler implements EventHandler {
 
-    private static final Logger LOGGER= LoggerFactory.getLogger(BalanceChangeHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BalanceChangeHandler.class);
     private KafkaTemplate<String, String> kafkaTemplate;
     private String topic;
 
-    public BalanceChangeHandler(KafkaTemplate<String,String> kafkaTemplate,String topic){
-        this.kafkaTemplate=kafkaTemplate;
-        this.topic=topic;
+    public BalanceChangeHandler(KafkaTemplate<String, String> kafkaTemplate, String topic) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.topic = topic;
 
     }
-
 
     @Override
     public void onOpen() throws Exception {
@@ -32,8 +31,8 @@ public class BalanceChangeHandler implements EventHandler {
     @Override
     public void onMessage(String s, MessageEvent messageEvent) throws Exception {
 
-        LOGGER.info(String.format("Send message -> %s",messageEvent.getData()));
-        kafkaTemplate.send(topic,messageEvent.getData());
+        LOGGER.info(String.format("Send message -> %s", messageEvent.getData()));
+        kafkaTemplate.send(topic, messageEvent.getData());
     }
 
     @Override

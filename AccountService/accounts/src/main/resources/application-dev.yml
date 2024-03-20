@@ -1,12 +1,14 @@
+server:
+  port: 9090
 spring:
   application:
-    name: transaction-service
+    name: "accounts"
   datasource:
-    url: jdbc:mysql://localhost:3306/transaction-service
+    url: jdbc:mysql://localhost:3306/account-service
     username: root
     password: Huynguyen11102002
-    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
   kafka:
@@ -14,11 +16,9 @@ spring:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    topic:
-      name: balance_updates
-
-server:
-  port: 9000
-
-
-
+    consumer:
+      auto-offset-reset: earliest
+      group-id: myGroup
+  sql:
+    init:
+      mode: always

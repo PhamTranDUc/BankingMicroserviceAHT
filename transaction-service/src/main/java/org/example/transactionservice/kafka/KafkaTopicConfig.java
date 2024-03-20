@@ -8,10 +8,8 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
 
-    public NewTopic topic(){
+    public NewTopic topic() {
         return TopicBuilder.name("balance_updates")
                 .build();
     }
-
-
 }
