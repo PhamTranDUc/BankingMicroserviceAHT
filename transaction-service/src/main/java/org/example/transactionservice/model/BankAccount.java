@@ -15,7 +15,6 @@ import java.util.Date;
 public class BankAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
 
     private Long userId;

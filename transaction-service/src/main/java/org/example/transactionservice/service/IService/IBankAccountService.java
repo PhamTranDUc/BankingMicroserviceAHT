@@ -9,4 +9,6 @@ public interface IBankAccountService {
     BankAccount getBankAccById(Long accountId) throws Exception;
 
     void updateAccountBalance(Long accountId, Double amount) throws Exception;
+
+    void createAccount(BankAccount account);
 }
