@@ -5,8 +5,10 @@ import org.example.transactionservice.common.AccountType;
 import org.example.transactionservice.model.BankAccount;
 import org.example.transactionservice.model.MessageCreateAccount;
 import org.example.transactionservice.service.IService.IBankAccountService;
+import org.example.transactionservice.service.implement.BankAccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class CreateAccountConsumer {
     private static final Logger LOGGER= LoggerFactory.getLogger(CreateAccountConsumer.class);
+
+    @Qualifier("bankAccountService")
     private IBankAccountService accountService;
 
     @KafkaListener(
