@@ -27,5 +27,7 @@ public class BankAccount {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
+    private Boolean enable;
+
 }
 

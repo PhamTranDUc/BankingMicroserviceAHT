@@ -8,4 +8,5 @@ public interface IAccountService {
     boolean updateAccount(AccountDto accountDto);
 
     boolean deleteAccount(Long accountNumber);
+    void enableAccount(Long accountNumber);
 }

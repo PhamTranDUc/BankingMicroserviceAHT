@@ -20,4 +20,8 @@ public class AccountDto {
 
     @NotEmpty(message = "Balance không thể là null hoặc empty")
     private Long balance;
+
+    public String toString(){
+        return customerId+" "+accountId+" "+accountType+" "+balance;
+    }
 }

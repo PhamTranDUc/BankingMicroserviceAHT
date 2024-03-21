@@ -11,4 +11,6 @@ public interface IBankAccountService {
     void updateAccountBalance(Long accountId, Double amount) throws Exception;
 
     void createAccount(BankAccount account);
+    boolean deleteAccount(Long accountNumber);
+    void enableAccount(Long accountNumber);
 }
