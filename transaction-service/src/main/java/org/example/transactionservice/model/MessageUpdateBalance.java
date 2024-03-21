@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MessageUpdateBalace {
+public class MessageUpdateBalance {
     private String accountId;
     private String balance;
     public String toString(){
