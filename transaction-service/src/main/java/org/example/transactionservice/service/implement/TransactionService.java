@@ -44,10 +44,10 @@ public class TransactionService implements ITransactionService {
         Transaction transaction = new Transaction();
         transaction.setSourceAccountId(transferDto.getSourceAccountId());
         transaction.setDestinationAccountId(transferDto.getDestinationAccountId());
-        transaction.setAmount(transaction.getAmount());
+        transaction.setAmount(transferDto.getAmount());
         transaction.setTransactionType(TransactionType.TRANSFER);
         transaction.setTransactionDate(LocalDateTime.now());
-        transaction.setDescription(transaction.getDescription());
+        transaction.setDescription(transferDto.getDescription());
 
         transactionRepository.save(transaction);
 

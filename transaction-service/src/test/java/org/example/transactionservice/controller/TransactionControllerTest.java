@@ -1,14 +1,9 @@
 package org.example.transactionservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.inject.Inject;
 import org.example.transactionservice.dto.transaction.TransferDto;
 import org.example.transactionservice.dto.transaction.WithdrawDto;
-import org.example.transactionservice.model.Transaction;
-import org.example.transactionservice.service.implement.TransactionService;
-import org.junit.Before;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodDescriptor;
+
 import org.junit.jupiter.api.RepeatedTest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@RunWith(MockitoJUnitRunner.class)
