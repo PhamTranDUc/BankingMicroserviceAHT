@@ -1,4 +1,4 @@
-package org.example.securityriskmanagementservice.config;
+package com.aht.UserManagementService.config;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

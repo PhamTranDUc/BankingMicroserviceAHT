@@ -1,4 +1,4 @@
-package org.example.securityriskmanagementservice.model;
+package com.aht.UserManagementService.model;
 
 import jakarta.persistence.*;
 import lombok.*;

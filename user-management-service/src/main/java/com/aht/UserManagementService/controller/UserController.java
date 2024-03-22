@@ -3,10 +3,10 @@ package com.aht.UserManagementService.controller;
 import com.aht.UserManagementService.dto.UserDTO;
 import com.aht.UserManagementService.entity.Role;
 import com.aht.UserManagementService.entity.User;
-import com.aht.UserManagementService.form.user.CreateUserForAdminForm;
-import com.aht.UserManagementService.form.user.CreateUserForm;
-import com.aht.UserManagementService.form.user.UpdateUserForm;
-import com.aht.UserManagementService.form.user.UpdateUserPasswordForm;
+import com.aht.UserManagementService.form.CreateUserForAdminForm;
+import com.aht.UserManagementService.form.CreateUserForm;
+import com.aht.UserManagementService.form.UpdateUserForm;
+import com.aht.UserManagementService.form.UpdateUserPasswordForm;
 import com.aht.UserManagementService.service.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +21,21 @@ import java.util.List;
 @RequestMapping("api/user")
 @Validated
 public class UserController {
+
     @Autowired
     IUserService userService;
-
 
     @PostMapping()
     public ResponseEntity<String> createUser(@RequestBody @Valid CreateUserForm form) {
         userService.createUser(form);
+        userService.sendUserCreatedMessage(form);
         return ResponseEntity.ok("Create Successfully!");
     }
 
     @PostMapping("/ad")
     public ResponseEntity<String> createUserFromAdmin(@RequestBody @Valid CreateUserForAdminForm form) {
         userService.createUserFromAdmin(form);
+        userService.sendCreateUserAdminForAdminMessage(form);
         return ResponseEntity.ok("Create Successfully!");
     }
 

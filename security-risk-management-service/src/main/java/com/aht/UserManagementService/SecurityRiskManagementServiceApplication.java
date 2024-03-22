@@ -1,4 +1,4 @@
-package org.example.securityriskmanagementservice;
+package com.aht.UserManagementService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,30 +1,34 @@
 package com.aht.UserManagementService.service;
 
-import com.aht.UserManagementService.dto.UserDTO;
 import com.aht.UserManagementService.entity.Role;
 import com.aht.UserManagementService.entity.User;
-import com.aht.UserManagementService.form.user.*;
+import com.aht.UserManagementService.form.*;
 import com.aht.UserManagementService.repository.IRoleRepository;
 import com.aht.UserManagementService.repository.IUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class UserService implements IUserService{
+public class UserService implements IUserService {
+
     @Autowired
     IUserRepository userRepository;
 
     @Autowired
     IRoleRepository roleRepository;
 
+    @Autowired(required = true)
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
     public void createUserFromAdmin(CreateUserForAdminForm form) {
-        Set<Role> roles =  form.getRoles();
+        Set<Role> roles = form.getRoles();
         Set<Role> rolesToAdd = new HashSet<>();
 
-        if(roles != null) {
+        if (roles != null) {
             for (Role role : roles) {
                 //Kiểm tra role đã tồn tại hay chưa
                 Role existingRole = roleRepository.findByRoleName(role.getRoleName());
@@ -117,8 +121,9 @@ public class UserService implements IUserService{
 
     @Transactional
     public User updatePassword(Integer id, UpdateUserPasswordForm form) {
-        if(id != null) {
-            User user = userRepository.findById(id).orElse(null);;
+        if (id != null) {
+            User user = userRepository.findById(id).orElse(null);
+            ;
 
             if (user.getPassword().equals(form.getOldPassword())) {
                 user.setPassword(form.getNewPassword());
@@ -185,5 +190,14 @@ public class UserService implements IUserService{
         user.setEmail(form.getEmail());
         user.setFullname(form.getFullname());
         return user;
+    }
+
+    public void sendUserCreatedMessage(CreateUserForm user) {
+        kafkaTemplate.send("create-user-topic", user);
+    }
+
+    @Override
+    public void sendCreateUserAdminForAdminMessage(CreateUserForAdminForm createUserForAdminForm) {
+        kafkaTemplate.send("create-user-for-admin-topic", createUserForAdminForm);
     }
 }

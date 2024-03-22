@@ -1,11 +1,8 @@
-package com.aht.UserManagementService.form.user;
+package com.aht.UserManagementService.form;
 
 import com.aht.UserManagementService.Validation.User.EmailNotExists;
-import com.aht.UserManagementService.Validation.User.UserIDExists;
 import com.aht.UserManagementService.Validation.User.UsernameNotExists;
-import com.aht.UserManagementService.entity.Role;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,15 +10,10 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.Set;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserForAdminForm {
-    @NotNull(message = "{User.updateUser.id.NotNull}")
-    private Integer id;
-
+@AllArgsConstructor
+public class CreateUserForm {
     @NonNull
     @NotBlank(message = "{User.createUser.username.NotBlank}")
     @Length(min = 6, max = 30, message = "{User.createUser.username.LenghtRange}")
@@ -38,8 +30,6 @@ public class UpdateUserForAdminForm {
     private String email;
 
     @NotBlank(message = "{User.createUser.fullname.NotBlank}")
-    @Length(min = 10, max = 50, message = "{User.createUser.fullname.LenghtRange}")
+    @Length(min = 6, max = 50, message = "{User.createUser.fullname.LenghtRange}")
     private String fullname;
-
-    private Set<Role> roles;
 }

@@ -1,4 +1,4 @@
-package com.aht.UserManagementService.form.user;
+package com.aht.UserManagementService.form;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

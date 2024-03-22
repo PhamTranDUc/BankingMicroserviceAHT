@@ -1,4 +1,4 @@
-package com.aht.UserManagementService.form.user;
+package com.aht.UserManagementService.form;
 
 import com.aht.UserManagementService.Validation.User.EmailNotExists;
 import com.aht.UserManagementService.Validation.User.UsernameNotExists;
@@ -23,7 +23,7 @@ public class CreateUserForm {
     @NotBlank(message = "{User.createUser.password.NotBlank}")
     @Length(min = 6, max = 30, message = "{User.createUser.password.LenghtRange}")
     private String password;
-    
+
     @NotBlank(message = "{User.createUser.email.NotBlank}")
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "{User.email.Pattern}")
     @EmailNotExists(message = "{User.createUser.email.NotExists}")
@@ -32,4 +32,12 @@ public class CreateUserForm {
     @NotBlank(message = "{User.createUser.fullname.NotBlank}")
     @Length(min = 6, max = 50, message = "{User.createUser.fullname.LenghtRange}")
     private String fullname;
+
+//    @Override
+//    public String toString() {
+//        return this.getUsername() + " "
+//                + this.getPassword() + " "
+//                + this.getEmail() + " "
+//                + this.getFullname() + " ";
+//    }
 }

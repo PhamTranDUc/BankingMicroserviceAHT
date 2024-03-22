@@ -2,10 +2,10 @@ package com.aht.UserManagementService.service;
 
 import com.aht.UserManagementService.entity.Role;
 import com.aht.UserManagementService.entity.User;
-import com.aht.UserManagementService.form.user.CreateUserForAdminForm;
-import com.aht.UserManagementService.form.user.CreateUserForm;
-import com.aht.UserManagementService.form.user.UpdateUserForm;
-import com.aht.UserManagementService.form.user.UpdateUserPasswordForm;
+import com.aht.UserManagementService.form.CreateUserForAdminForm;
+import com.aht.UserManagementService.form.CreateUserForm;
+import com.aht.UserManagementService.form.UpdateUserForm;
+import com.aht.UserManagementService.form.UpdateUserPasswordForm;
 
 import java.util.List;
 
@@ -22,4 +22,6 @@ public interface IUserService {
     boolean isUserExistsByUsername(String username);
     boolean isUserExistsByEmail(String email);
     public boolean isUserExistsByID(Integer id);
+    void sendUserCreatedMessage(CreateUserForm user);
+    void sendCreateUserAdminForAdminMessage(CreateUserForAdminForm createUserForAdminForm);
 }
