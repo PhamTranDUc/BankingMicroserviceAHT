@@ -1,9 +1,9 @@
 package com.BankAHT.accounts.repository;
 
-import com.BankAHT.accounts.entity.MessageKafka;
+import com.BankAHT.accounts.dto.MessageTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MessageKafkaRepository extends JpaRepository<MessageKafka,Long> {
+public interface MessageTransactionRepository extends JpaRepository<MessageTransaction,Long> {
 }

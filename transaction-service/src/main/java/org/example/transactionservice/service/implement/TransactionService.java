@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.example.transactionservice.common.TransactionType;
 import org.example.transactionservice.dto.transaction.DepositDto;
+import org.example.transactionservice.dto.transaction.MessageTransaction;
 import org.example.transactionservice.dto.transaction.TransferDto;
 import org.example.transactionservice.dto.transaction.WithdrawDto;
 import org.example.transactionservice.exception.AccountIsNotValidException;
@@ -13,6 +14,7 @@ import org.example.transactionservice.model.Transaction;
 import org.example.transactionservice.repository.TransactionRepository;
 import org.example.transactionservice.service.IService.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ public class TransactionService implements ITransactionService {
 
     @Autowired
     private final TransactionRepository transactionRepository;
+
 
     // handle transfer action
     @Transactional
@@ -49,10 +52,13 @@ public class TransactionService implements ITransactionService {
         transaction.setTransactionDate(LocalDateTime.now());
         transaction.setDescription(transferDto.getDescription());
 
-        transactionRepository.save(transaction);
 
-        bankAccountService.updateAccountBalance(transferDto.getSourceAccountId(), -transferDto.getAmount());
-        bankAccountService.updateAccountBalance(transferDto.getDestinationAccountId(), transferDto.getAmount());
+
+        for(int i=0;i<10;i++){
+            transactionRepository.save(transaction);
+            bankAccountService.updateAccountBalance(transferDto.getSourceAccountId(), -transferDto.getAmount());
+            bankAccountService.updateAccountBalance(transferDto.getDestinationAccountId(), transferDto.getAmount());
+        }
         return transaction;
     }
 

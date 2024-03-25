@@ -13,9 +13,23 @@ spring:
       ddl-auto: update
   kafka:
     producer:
+      acks: -1
+      retries: 1
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        request:
+          timeout:
+            ms: 1
+        enable:
+          idempotence: true
+        max:
+          in:
+            flight:
+              requests:
+                per:
+                  connection:5
     consumer:
       auto-offset-reset: earliest
       group-id: myGroup

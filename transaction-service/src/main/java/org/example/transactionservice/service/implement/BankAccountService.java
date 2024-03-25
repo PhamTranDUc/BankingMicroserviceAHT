@@ -1,22 +1,30 @@
 package org.example.transactionservice.service.implement;
 
 import jakarta.transaction.Transactional;
+import org.example.transactionservice.dto.transaction.MessageTransaction;
 import org.example.transactionservice.exception.AccountIsNotValidException;
 import org.example.transactionservice.exception.ResourceNoFoundException;
 import org.example.transactionservice.model.BankAccount;
-import org.example.transactionservice.model.MessageUpdateBalance;
 import org.example.transactionservice.repository.BankAccountRepository;
+import org.example.transactionservice.repository.MessageTransactionRepository;
 import org.example.transactionservice.service.IService.IBankAccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class BankAccountService implements IBankAccountService {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, Object> kafkaTemplate;
     private final BankAccountRepository bankAccountRepository;
+    private Logger logger= LoggerFactory.getLogger(BankAccountService.class);
 
-    public BankAccountService(KafkaTemplate<String, String> kafkaTemplate, BankAccountRepository bankAccountRepository){
+    @Autowired
+    private MessageTransactionRepository messageUpdateBalanceRepository;
+
+    public BankAccountService(KafkaTemplate<String, Object> kafkaTemplate, BankAccountRepository bankAccountRepository){
         this.kafkaTemplate= kafkaTemplate;
         this.bankAccountRepository=bankAccountRepository;
     }
@@ -40,7 +48,12 @@ public class BankAccountService implements IBankAccountService {
 
         bankAccount.setBalance(updatedBalance);
         bankAccountRepository.save(bankAccount);
-        sendMessage(accountId.toString(), bankAccount.getBalance());
+       MessageTransaction messageTransaction= new MessageTransaction(accountId,amount.longValue());
+       messageTransaction.setStatus(false);
+       messageUpdateBalanceRepository.save(messageTransaction);
+
+
+
     }
 
     @Override
@@ -64,17 +77,10 @@ public class BankAccountService implements IBankAccountService {
 
     @Override
     public void enableAccount(Long accountNumber) {
-
         BankAccount accounts= bankAccountRepository.findById(accountNumber).orElseThrow(()-> new ResourceNoFoundException("Accouts",accountNumber.toString(),"AccoutsNumber"));
         accounts.setEnable(true);
         bankAccountRepository.save(accounts);
     }
 
-    private void sendMessage(String accountId, double balance) {
-        String topic = "balance_updates";
-        Long balanceL= Math.round(balance);
-        MessageUpdateBalance messageUpdateBalace= new MessageUpdateBalance(accountId,Long.toString(balanceL));
-        // Gửi thông điệp Kafka với accountId và amount
-        kafkaTemplate.send(topic, "updateBalance", messageUpdateBalace.toString());
-    }
+
 }
