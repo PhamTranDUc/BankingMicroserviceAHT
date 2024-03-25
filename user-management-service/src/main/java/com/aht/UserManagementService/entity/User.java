@@ -1,12 +1,7 @@
 package com.aht.UserManagementService.entity;
 
-import com.aht.UserManagementService.Validation.User.EmailNotExists;
-import com.aht.UserManagementService.Validation.User.UsernameNotExists;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 import java.util.Set;

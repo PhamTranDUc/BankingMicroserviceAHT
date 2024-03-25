@@ -1,5 +1,4 @@
-package com.aht.UserManagementService.model;
-
+package com.aht.securityriskmangement.model;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,8 +26,7 @@ public class Users {
 
     private String fullName;
 
-    @ElementCollection
-    private List<String> role = new ArrayList<>();
+    private String roles;
 
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;

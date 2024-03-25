@@ -1,7 +1,6 @@
 package com.aht.UserManagementService.form;
 
 import com.aht.UserManagementService.Validation.User.EmailNotExists;
-import com.aht.UserManagementService.Validation.User.UserIDExists;
 import com.aht.UserManagementService.Validation.User.UsernameNotExists;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

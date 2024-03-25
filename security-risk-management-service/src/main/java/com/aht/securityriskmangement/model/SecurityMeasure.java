@@ -1,4 +1,4 @@
-package com.aht.UserManagementService.model;
+package com.aht.securityriskmangement.model;
 
 import jakarta.persistence.*;
 import lombok.*;

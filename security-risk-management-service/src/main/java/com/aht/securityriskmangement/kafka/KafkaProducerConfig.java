@@ -1,4 +1,4 @@
-package com.aht.UserManagementService.kafka;
+package com.aht.securityriskmangement.kafka;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

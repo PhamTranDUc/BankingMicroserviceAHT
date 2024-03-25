@@ -1,6 +1,6 @@
-package com.aht.UserManagementService.repository;
+package com.aht.securityriskmangement.repository;
 
-import com.aht.UserManagementService.model.Users;
+import com.aht.securityriskmangement.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

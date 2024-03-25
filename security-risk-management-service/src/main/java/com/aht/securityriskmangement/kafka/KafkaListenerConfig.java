@@ -1,18 +1,15 @@
-package com.aht.UserManagementService.kafka;
+package com.aht.securityriskmangement.kafka;
 
-import com.aht.UserManagementService.entity.Role;
 import com.aht.UserManagementService.form.CreateUserForAdminForm;
 import com.aht.UserManagementService.form.CreateUserForm;
-import com.aht.UserManagementService.model.Users;
-import com.aht.UserManagementService.repository.UsersRepository;
+import com.aht.securityriskmangement.model.Users;
+import com.aht.securityriskmangement.repository.UsersRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.time.LocalDateTime;
 
 @Component
 @AllArgsConstructor
@@ -29,6 +26,7 @@ public class KafkaListenerConfig {
                     .email(createUserData.getEmail())
                     .fullName(createUserData.getFullname())
                     .password(createUserData.getPassword())
+                    .createdAt(LocalDateTime.now())
                     .build();
             usersRepository.save(users);
         }
