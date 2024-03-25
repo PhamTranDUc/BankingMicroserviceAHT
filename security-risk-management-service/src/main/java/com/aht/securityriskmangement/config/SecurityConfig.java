@@ -5,24 +5,34 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import com.aht.securityriskmangement.repository.UsersRepository;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.orm.hibernate5.SpringSessionContext;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -46,7 +56,11 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig {
+
+    @Autowired
+    private final UsersRepository usersRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -76,9 +90,9 @@ public class SecurityConfig {
         return http.build();
     }
 
+//    @Bean
 //    public UserDetailsService userDetails() {
-//        return new UserDetails() {
-//        }
+//        return new UserDetailsServiceImp(usersRepository);
 //    }
 
     @Bean
@@ -98,13 +112,22 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails userDetails = User.builder()
-                .username("user")
-                .password("password")
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+
+        UserDetails user1 = User.withUsername("user1")
+                .password("password1")
                 .roles("USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(userDetails);
+        UserDetails user2 = User.withUsername("user2")
+                .password("password2")
+                .roles("ADMIN", "USER")
+                .build();
+
+        manager.createUser(user1);
+        manager.createUser(user2);
+
+        return manager;
     }
 
     @Bean
@@ -163,11 +186,23 @@ public class SecurityConfig {
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> accessTokenCustomizer() {
         return (context) -> {
+            Authentication authentication = context.getPrincipal();
+            String username = authentication.getName(); // Lấy tên người dùng từ đối tượng Authentication
+
+            // Lấy danh sách các quyền (roles) của người dùng
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            List<String> roles = authorities.stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+            System.out.println(username);
             context.getClaims().claims(claims -> {
-                claims.put("role", "test");
+                claims.put("role", roles); // Thêm danh sách vai trò vào claims
+                claims.put("username", username); // Thêm tên người dùng vào claims
             });
         };
     }
+
 
     @Bean
     public TokenSettings tokenSettings() {

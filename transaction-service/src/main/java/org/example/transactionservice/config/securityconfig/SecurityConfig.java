@@ -24,7 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/v1/**").hasAuthority("SCOPE_test")
+                        .requestMatchers("/api/v1/**").hasAuthority("SCOPE_ROLE_ADMIN")
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2
