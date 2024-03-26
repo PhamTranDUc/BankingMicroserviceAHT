@@ -2,7 +2,7 @@ package com.aht.UserManagementService;
 
 
 import com.aht.UserManagementService.entity.Role;
-import com.aht.UserManagementService.entity.User;
+import com.aht.UserManagementService.entity.Users;
 import com.aht.UserManagementService.repository.IUserRepository;
 import com.aht.UserManagementService.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ public class UserRepositoryTest {
     @InjectMocks
     private UserService userService;
 
-    private User user;
+    private Users user;
     private Role role;
 
     @BeforeEach
@@ -34,7 +34,7 @@ public class UserRepositoryTest {
         role = new Role(1, Role.RoleName.USER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        user = new User(1, "username1", "123456", "abc@gmail.com", "fullname", new Date(), roles);
+        user = new Users(1, "username1", "123456", "abc@gmail.com", "fullname", new Date(), roles);
         ReflectionTestUtils.setField(userService, "userRepository", userRepository);
     }
 
@@ -57,12 +57,12 @@ public class UserRepositoryTest {
     @Test
     public void testFindAllUsers() {
         // Arrange
-        List<User> userList = new ArrayList<>();
-        userList.add(new User());
+        List<Users> userList = new ArrayList<>();
+        userList.add(new Users());
         when(userRepository.findAll()).thenReturn(userList);
 
         // Act
-        List<User> foundUsers = userService.getAllUsers();
+        List<Users> foundUsers = userService.getAllUsers();
 
         // Assert
         assertFalse(foundUsers.isEmpty());

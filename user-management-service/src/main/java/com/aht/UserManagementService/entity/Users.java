@@ -12,7 +12,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Users {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "userId")
@@ -36,7 +36,7 @@ public class User {
     @Temporal(TemporalType.DATE)
     private Date created_at;
 
-    @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "userId", referencedColumnName = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId", referencedColumnName = "roleId"))
     private Set<Role> roles;

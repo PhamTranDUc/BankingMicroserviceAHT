@@ -1,7 +1,7 @@
 package com.aht.UserManagementService.service;
 
 import com.aht.UserManagementService.entity.Role;
-import com.aht.UserManagementService.entity.User;
+import com.aht.UserManagementService.entity.Users;
 import com.aht.UserManagementService.form.CreateUserForAdminForm;
 import com.aht.UserManagementService.form.CreateUserForm;
 import com.aht.UserManagementService.form.UpdateUserForm;
@@ -12,11 +12,11 @@ import java.util.List;
 public interface IUserService {
     public void createUser(CreateUserForm user);
     public void createUserFromAdmin(CreateUserForAdminForm user);
-    public List<User> getAllUsers();
-    public User getUserById(Integer id);
-    public User updateUser(UpdateUserForm form);
+    public List<Users> getAllUsers();
+    public Users getUserById(Integer id);
+    public Users updateUser(UpdateUserForm form);
     public void deleteUser(Integer userId);
-    public User updatePassword(Integer id, UpdateUserPasswordForm form);
+    public Users updatePassword(Integer id, UpdateUserPasswordForm form);
     public void revokeRoles(Integer userId);
     public void grantRoles(Integer userId, List<Role.RoleName> roleNames);
     boolean isUserExistsByUsername(String username);

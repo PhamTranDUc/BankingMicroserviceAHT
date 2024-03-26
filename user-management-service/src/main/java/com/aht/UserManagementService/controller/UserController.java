@@ -2,7 +2,7 @@ package com.aht.UserManagementService.controller;
 
 import com.aht.UserManagementService.dto.UserDTO;
 import com.aht.UserManagementService.entity.Role;
-import com.aht.UserManagementService.entity.User;
+import com.aht.UserManagementService.entity.Users;
 import com.aht.UserManagementService.form.CreateUserForAdminForm;
 import com.aht.UserManagementService.form.CreateUserForm;
 import com.aht.UserManagementService.form.UpdateUserForm;
@@ -41,29 +41,29 @@ public class UserController {
 
     @GetMapping()
     public List<UserDTO> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+        List<Users> users = userService.getAllUsers();
         List<UserDTO> userDTOS = new ArrayList<>();
 
-        for (User user : users) {
+        for (Users user : users) {
             userDTOS.add(userToUserDTO(user));
         }
         return userDTOS;
     }
 
     @GetMapping("/ad/role")
-    public List<User> getAllUserWithRoles() {
+    public List<Users> getAllUserWithRoles() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
     public UserDTO getUserById(@PathVariable(name = "id") Integer id) {
-        User user = userService.getUserById(id);
+        Users user = userService.getUserById(id);
         UserDTO userDTO = userToUserDTO(user);
         return userDTO;
     }
 
     @GetMapping("/ad/role/{id}")
-    public User getUserWithRoleById(@PathVariable(name = "id") Integer id) {
+    public Users getUserWithRoleById(@PathVariable(name = "id") Integer id) {
         return userService.getUserById(id);
     }
 
@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @PutMapping("/password/{id}")
-    public User updateUserPassword(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdateUserPasswordForm form) {
+    public Users updateUserPassword(@PathVariable(name = "id") Integer id, @RequestBody @Valid UpdateUserPasswordForm form) {
 
         return userService.updatePassword(id, form);
     }
@@ -96,7 +96,7 @@ public class UserController {
         return ResponseEntity.ok("Roles revoked successfully.");
     }
 
-    private UserDTO userToUserDTO(User user) {
+    private UserDTO userToUserDTO(Users user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUsername(user.getUsername());
         userDTO.setPassword(user.getPassword());

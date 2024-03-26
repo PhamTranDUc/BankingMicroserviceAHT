@@ -1,13 +1,14 @@
 package com.aht.UserManagementService.service;
 
 import com.aht.UserManagementService.entity.Role;
-import com.aht.UserManagementService.entity.User;
+import com.aht.UserManagementService.entity.Users;
 import com.aht.UserManagementService.form.*;
 import com.aht.UserManagementService.repository.IRoleRepository;
 import com.aht.UserManagementService.repository.IUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,6 +24,9 @@ public class UserService implements IUserService {
 
     @Autowired(required = true)
     private KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public void createUserFromAdmin(CreateUserForAdminForm form) {
         Set<Role> roles = form.getRoles();
@@ -43,10 +47,9 @@ public class UserService implements IUserService {
             rolesToAdd.add(role);
         }
 
-
         form.setRoles(rolesToAdd);
 
-        User user = userFormToUserAd(form);
+        Users user = userFormToUserAd(form);
 
         user.setCreated_at(new Date());
 
@@ -58,30 +61,30 @@ public class UserService implements IUserService {
         Role role = roleRepository.findByRoleName(Role.RoleName.USER);
         rolesToAdd.add(role);
 
-        User user = userFormToUser(form);
+        Users user = userFormToUser(form);
         user.setCreated_at(new Date());
         user.setRoles(rolesToAdd);
 
         userRepository.save(user);
     }
 
-    public List<User> getAllUsers() {
+    public List<Users> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public User getUserById(Integer id) {
+    public Users getUserById(Integer id) {
         return userRepository.findById(id).get();
     }
 
-    public User getUserByUsername(String username) {
+    public Users getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public User updateUser(UpdateUserForm newUser) {
+    public Users updateUser(UpdateUserForm newUser) {
         boolean userExists = isUserExistsByID(newUser.getId());
         Integer id = newUser.getId();
         if (id != null) {
-            User existingUser = userRepository.findById(id).orElse(null);
+            Users existingUser = userRepository.findById(id).orElse(null);
             if (existingUser != null) {
                 // Chỉ cập nhật thông tin user, không cập nhật thông tin role
                 existingUser.setUsername(newUser.getUsername());
@@ -93,11 +96,11 @@ public class UserService implements IUserService {
         return null;
     }
 
-    public User updateUserByAdmin(UpdateUserForAdminForm newUser) {
+    public Users updateUserByAdmin(UpdateUserForAdminForm newUser) {
         boolean userExists = isUserExistsByID(newUser.getId());
         Integer id = newUser.getId();
         if (id != null) {
-            User existingUser = userRepository.findById(id).orElse(null);
+            Users existingUser = userRepository.findById(id).orElse(null);
             if (existingUser != null) {
                 existingUser.setUsername(newUser.getUsername());
                 existingUser.setEmail(newUser.getEmail());
@@ -120,9 +123,9 @@ public class UserService implements IUserService {
     }
 
     @Transactional
-    public User updatePassword(Integer id, UpdateUserPasswordForm form) {
+    public Users updatePassword(Integer id, UpdateUserPasswordForm form) {
         if (id != null) {
-            User user = userRepository.findById(id).orElse(null);
+            Users user = userRepository.findById(id).orElse(null);
             ;
 
             if (user.getPassword().equals(form.getOldPassword())) {
@@ -136,9 +139,9 @@ public class UserService implements IUserService {
 
     @Transactional
     public void revokeRoles(Integer userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<Users> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
+            Users user = optionalUser.get();
             user.getRoles().clear(); // Xóa tất cả các vai trò của người dùng
             userRepository.save(user);
         }
@@ -146,7 +149,7 @@ public class UserService implements IUserService {
 
     @Transactional
     public void grantRoles(Integer userId, List<Role.RoleName> roleNames) {
-        User user = userRepository.findById(userId).orElse(null);
+        Users user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             Set<Role> rolesToAdd = new HashSet<>();
             for (Role.RoleName roleName : roleNames) {
@@ -172,10 +175,10 @@ public class UserService implements IUserService {
         return userRepository.existsById(id);
     }
 
-    private User userFormToUserAd(CreateUserForAdminForm form) {
-        User user = new User();
+    private Users userFormToUserAd(CreateUserForAdminForm form) {
+        Users user = new Users();
         user.setUsername(form.getUsername());
-        user.setPassword(form.getPassword());
+        user.setPassword(passwordEncoder.encode(form.getPassword()));
         user.setEmail(form.getEmail());
         user.setFullname(form.getFullname());
         user.setRoles(form.getRoles());
@@ -183,10 +186,10 @@ public class UserService implements IUserService {
         return user;
     }
 
-    private User userFormToUser(CreateUserForm form) {
-        User user = new User();
+    private Users userFormToUser(CreateUserForm form) {
+        Users user = new Users();
         user.setUsername(form.getUsername());
-        user.setPassword(form.getPassword());
+        user.setPassword(passwordEncoder.encode(form.getPassword()));
         user.setEmail(form.getEmail());
         user.setFullname(form.getFullname());
         return user;

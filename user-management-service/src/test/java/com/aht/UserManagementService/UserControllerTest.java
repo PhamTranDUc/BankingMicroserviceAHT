@@ -3,7 +3,7 @@ package com.aht.UserManagementService;
 
 import com.aht.UserManagementService.controller.UserController;
 import com.aht.UserManagementService.entity.Role;
-import com.aht.UserManagementService.entity.User;
+import com.aht.UserManagementService.entity.Users;
 import com.aht.UserManagementService.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
-    private User user;
+    private Users user;
     private Role role;
 
     @BeforeEach
@@ -41,7 +41,7 @@ class UserControllerTest {
         role = new Role(1, Role.RoleName.USER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        user = new User(1, "username1", "123456", "abc@gmail.com", "fullname", new Date(), roles);
+        user = new Users(1, "username1", "123456", "abc@gmail.com", "fullname", new Date(), roles);
         ReflectionTestUtils.setField(userController, "userService", userService);
     }
 
@@ -59,10 +59,10 @@ class UserControllerTest {
 
     @Test
     void testGetAllUsers() {
-        List<User> userList = Arrays.asList(user);
+        List<Users> userList = Arrays.asList(user);
         when(userService.getAllUsers()).thenReturn(userList);
 
-        List<User> result = userController.getAllUserWithRoles();
+        List<Users> result = userController.getAllUserWithRoles();
 
         assertNotNull(result);
         assertEquals(userList.size(), result.size());
@@ -75,7 +75,7 @@ class UserControllerTest {
         Integer userId = 1;
         when(userService.getUserById(userId)).thenReturn(user);
 
-        User result = userController.getUserWithRoleById(userId);
+        Users result = userController.getUserWithRoleById(userId);
 
         assertNotNull(result);
         assertEquals(user, result);
