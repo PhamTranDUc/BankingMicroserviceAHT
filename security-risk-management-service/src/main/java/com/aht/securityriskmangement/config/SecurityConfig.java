@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.aht.securityriskmangement.repository.UsersRepository;
+import com.aht.securityriskmangement.service.UserDetailsServiceImp;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -24,6 +25,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.orm.hibernate5.SpringSessionContext;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -90,11 +93,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    public UserDetailsService userDetails() {
-//        return new UserDetailsServiceImp(usersRepository);
-//    }
-
     @Bean
     @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
@@ -111,24 +109,33 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(new UserDetailsServiceImp(usersRepository));
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
 
-        UserDetails user1 = User.withUsername("user1")
-                .password("password1")
-                .roles("USER")
-                .build();
-
-        UserDetails user2 = User.withUsername("user2")
-                .password("password2")
-                .roles("ADMIN", "USER")
-                .build();
-
-        manager.createUser(user1);
-        manager.createUser(user2);
-
-        return manager;
+        return daoAuthenticationProvider;
     }
+
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+//
+//        UserDetails user1 = User.withUsername("user1")
+//                .password("password1")
+//                .roles("USER")
+//                .build();
+//
+//        UserDetails user2 = User.withUsername("user2")
+//                .password("password2")
+//                .roles("ADMIN", "USER")
+//                .build();
+//
+//        manager.createUser(user1);
+//        manager.createUser(user2);
+//
+//        return manager;
+//    }
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
